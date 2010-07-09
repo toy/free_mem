@@ -4,3 +4,4 @@ build/
 *.mode2v3
 *.perspective
 *.perspectivev3
+*.out
