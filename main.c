@@ -10,7 +10,7 @@ int match(const char *string, char *pattern) {
 	if (regcomp(&re, pattern, REG_EXTENDED|REG_ICASE|REG_NOSUB) != 0) {
 		return 0;
 	}
-	status = regexec(&re, string, (size_t)0, NULL, 0);
+	status = regexec(&re, string, 0, NULL, 0);
 	regfree(&re);
 	return !status;
 }
