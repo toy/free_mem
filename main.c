@@ -15,7 +15,7 @@ int match(const char *string, char *pattern) {
 	return !status;
 }
 
-int main (int argc, const char * argv[]) {
+int main (int argc, const char* argv[]) {
 	size_t sys_mem, free_mem;
 
 	FILE *fpipe;
