@@ -1,8 +1,8 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <regex.h>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <sys/sysctl.h>
 
 int match(const char *string, char *pattern) {
 	int status;
@@ -18,13 +18,11 @@ int match(const char *string, char *pattern) {
 int main (int argc, const char* argv[]) {
 	size_t sys_mem, free_mem;
 
-	FILE *fpipe;
-	if (!(fpipe = popen("sysctl -n hw.memsize", "r"))) {
-		perror("Problems with pipe");
+	unsigned long length = sizeof(sys_mem);
+	if (0 != sysctlbyname("hw.memsize", &sys_mem, &length, NULL, 0)) {
+		perror("Can't get total memory");
 		exit(EXIT_FAILURE);
 	}
-	fscanf(fpipe, "%lu", &sys_mem);
-	pclose(fpipe);
 
 	printf("Total RAM: %luMb\n", sys_mem / 1024 / 1024);
 
