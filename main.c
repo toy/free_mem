@@ -16,6 +16,8 @@ int match(const char *string, char *pattern) {
 	return !status;
 }
 
+#define MEGABYTE 1048576
+
 int main (int argc, const char* argv[]) {
 	size_t sys_mem, free_mem;
 
@@ -62,13 +64,24 @@ int main (int argc, const char* argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	printf("Freeing %luMb of RAM\n", free_mem / 1024 / 1024);
-	char *c;
-	c = malloc(free_mem);
-	mlock(c, free_mem);
-	sleep(1);
-	munlock(c, free_mem);
-	free(c);
+	size_t block_count = free_mem / MEGABYTE, block;
+	printf("Freeing %luMb of RAM\n", block_count);
+
+	void **blocks = calloc(block_count, sizeof(void *));
+	for (block = 0; block < block_count; block++) {
+		printf("\r%.1f%%", 95.0f * block / block_count);
+		fflush(stdout);
+		blocks[block] = malloc(MEGABYTE);
+		mlock(blocks[block], MEGABYTE);
+	}
+	for (block = 0; block < block_count; block++) {
+		printf("\r%.1f%%", 95.0f + 5.0f * block / block_count);
+		fflush(stdout);
+		munlock(blocks[block], MEGABYTE);
+		free(blocks[block]);
+	}
+	free(blocks);
+	printf("\rDone! \n");
 
 	return EXIT_SUCCESS;
 }
