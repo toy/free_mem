@@ -59,8 +59,8 @@ int main (int argc, const char* argv[]) {
 		fprintf(stderr, "Can't free less than 1Mb");
 		exit(EXIT_FAILURE);
 	}
-	if (free_mem > sys_mem / 2) {
-		fprintf(stderr, "Can't free more than half of avaliable memory (avaliable: %lu)", sys_mem);
+	if (free_mem > sys_mem / 0.75) {
+		fprintf(stderr, "Can't free more than 3/4 of avaliable memory (avaliable: %lu)", sys_mem);
 		exit(EXIT_FAILURE);
 	}
 
