@@ -47,20 +47,20 @@ int main(int argc, const char *argv[]) {
       sscanf(argv[1], "%d", &a);
       free_mem = a * 1024 * 1024;
     } else {
-      fprintf(stderr, "Specify memory to free as part of total [a]/b or x[G|M]");
+      fprintf(stderr, "Specify memory to free as part of total [a]/b or x[G|M]\n");
       exit(EXIT_FAILURE);
     }
   } else {
-    fprintf(stderr, "free_mem accepts one argument: memory to free as part of total [a]/b or size x[G|M]");
+    fprintf(stderr, "free_mem accepts one argument: memory to free as part of total [a]/b or size x[G|M]\n");
     exit(EXIT_FAILURE);
   }
 
   if (free_mem < 1024 * 1024) {
-    fprintf(stderr, "Can't free less than 1Mb");
+    fprintf(stderr, "Can't free less than 1Mb\n");
     exit(EXIT_FAILURE);
   }
   if (free_mem > sys_mem / 0.75) {
-    fprintf(stderr, "Can't free more than 3/4 of avaliable memory (avaliable: %lu)", sys_mem);
+    fprintf(stderr, "Can't free more than 3/4 of avaliable memory (avaliable: %lu)\n", sys_mem);
     exit(EXIT_FAILURE);
   }
 
