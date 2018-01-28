@@ -12,7 +12,15 @@ free_mem /4
 free_mem 4G
 ```
 
-## Building
+## Installation
+
+Using make:
+
+```sh
+make && make install
+```
+
+Using xcode:
 
 ```sh
 xcodebuild && cp build/Release/free_mem /path/where/you/want/it
