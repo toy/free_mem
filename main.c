@@ -16,7 +16,8 @@ int match(const char *string, char *pattern) {
   return !status;
 }
 
-#define MEGABYTE 1048576
+#define MEGA (1024 * 1024)
+#define GIGA (1024 * 1024 * 1024)
 
 int main(int argc, const char *argv[]) {
   size_t sys_mem, free_mem;
@@ -27,7 +28,7 @@ int main(int argc, const char *argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  printf("Total RAM: %luMb\n", sys_mem / 1024 / 1024);
+  printf("Total RAM: %luMb\n", sys_mem / MEGA);
 
   if (argc == 1) {
     free_mem = sys_mem / 8;
@@ -42,10 +43,10 @@ int main(int argc, const char *argv[]) {
       free_mem = sys_mem / b;
     } else if (match(argv[1], "^[0-9]+g$")) {
       sscanf(argv[1], "%d", &a);
-      free_mem = a * 1024 * 1024 * 1024;
+      free_mem = a * GIGA;
     } else if (match(argv[1], "^[0-9]+m?$")) {
       sscanf(argv[1], "%d", &a);
-      free_mem = a * 1024 * 1024;
+      free_mem = a * MEGA;
     } else {
       fprintf(stderr, "Specify ammount of memory to free as a fraction of total [a]/b or directly x[G|M]\n");
       exit(EXIT_FAILURE);
@@ -55,7 +56,7 @@ int main(int argc, const char *argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  if (free_mem < 1024 * 1024) {
+  if (free_mem < MEGA) {
     fprintf(stderr, "Can't free less than 1Mb\n");
     exit(EXIT_FAILURE);
   }
@@ -64,20 +65,20 @@ int main(int argc, const char *argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  size_t block_count = free_mem / MEGABYTE, block;
+  size_t block_count = free_mem / MEGA, block;
   printf("Freeing %luMb of RAM\n", block_count);
 
   void **blocks = calloc(block_count, sizeof(void *));
   for (block = 0; block < block_count; block++) {
     printf("\r%.1f%%", 95.0f * block / block_count);
     fflush(stdout);
-    blocks[block] = malloc(MEGABYTE);
-    mlock(blocks[block], MEGABYTE);
+    blocks[block] = malloc(MEGA);
+    mlock(blocks[block], MEGA);
   }
   for (block = 0; block < block_count; block++) {
     printf("\r%.1f%%", 95.0f + 5.0f * block / block_count);
     fflush(stdout);
-    munlock(blocks[block], MEGABYTE);
+    munlock(blocks[block], MEGA);
     free(blocks[block]);
   }
   free(blocks);
